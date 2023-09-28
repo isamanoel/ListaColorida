@@ -1,22 +1,18 @@
-package com.example.listacolorida;
+        package com.example.listacolorida;
 
-import androidx.appcompat.app.AppCompatActivity;
+        import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
+        import android.annotation.SuppressLint;
+        import android.content.Intent;
+        import android.database.Cursor;
+        import android.graphics.Color;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.widget.AdapterView;
+        import android.widget.Button;
+        import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
+        import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
         lista.setAdapter(cursorAdapter);
 
         btnAddText.setOnClickListener(new EscutadorBotao());
+        EscutadorLista el = new EscutadorLista();
+        lista.setOnItemClickListener( el );
+        lista.setOnItemLongClickListener( el );
+
     }
 
     private class EscutadorBotao implements View.OnClickListener {
@@ -62,6 +62,48 @@ public class MainActivity extends AppCompatActivity {
             atualizarDados();
         }
     }
+
+    private class EscutadorLista implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Cursor cursor = (Cursor) cursorAdapter.getItem(i);
+            if (cursor != null) {
+                @SuppressLint("Range") String texto = cursor.getString(cursor.getColumnIndex("Texto"));
+                @SuppressLint("Range") int numCor = cursor.getInt(cursor.getColumnIndex("Cor"));
+                String cor = "";
+
+                if (numCor == Color.RED){
+                    cor = "Vermelho";
+                } else if (numCor == Color.GREEN) {
+                    cor = "Verde";
+                } else if (numCor == Color.BLUE) {
+                    cor = "Azul";
+                }
+
+                // Exemplo: exibir informações do item clicado
+                Toast.makeText(MainActivity.this, texto + "\n" + cor, Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+            Cursor cursor = (Cursor) cursorAdapter.getItem(i);
+
+            if (cursor != null) {
+                @SuppressLint("Range") int id = cursor.getInt(cursor.getColumnIndex("_id"));
+
+                // Exclui o item do banco de dados
+                db.excluirDadoPorId(id);
+
+                // Atualiza a lista
+                atualizarDados();
+
+                Toast.makeText(MainActivity.this, "Texto excluído!", Toast.LENGTH_SHORT).show();
+            }
+            return true;
+        }
+    }
+
 
     private void atualizarDados() {
         Cursor cursor = db.obterTodosDados();

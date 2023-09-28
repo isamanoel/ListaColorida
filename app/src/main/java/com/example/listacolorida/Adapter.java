@@ -2,6 +2,7 @@ package com.example.listacolorida;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,5 +30,8 @@ public class Adapter extends CursorAdapter {
         // Configure a cor do texto
         textView.setTextColor(cor);
         textView.setText(texto);
+        textView.setTextSize(20);
+        //textView.setTypeface(null, Typeface.BOLD);
+
     }
 }

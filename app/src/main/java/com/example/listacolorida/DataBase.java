@@ -8,21 +8,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DataBase extends SQLiteOpenHelper {
-
     private static final String DATABASE_NAME = "MeuDatabase";
-    private static final String TABLE_NAME = "TabelaTexto";
-    private static final String COL_TEXTO = "Texto";
-    private static final String COL_COR = "Cor";
+        private static final String TABLE_NAME = "Tabela";
+        private static final String COL_TEXTO = "Texto";
+        private static final String COL_COR = "Cor";
 
-    private static final String CREATE_TABLE =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                    COL_TEXTO + " TEXT, " +
-                    COL_COR + " INTEGER" +
-                    ");";
-
-    public DataBase(Context context) {
-        super(context, DATABASE_NAME, null, 1);
-    }
+        private static final String CREATE_TABLE =
+                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
+                        "_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        COL_TEXTO + " TEXT, " +
+                        COL_COR + " INTEGER" +
+                        ");";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -39,17 +35,27 @@ public class DataBase extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public long inserirDado(String texto, int cor) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(COL_TEXTO, texto);
-        contentValues.put(COL_COR, cor);
-        return db.insert(TABLE_NAME, null, contentValues);
-    }
+    public DataBase(Context context) {
+            super(context, DATABASE_NAME, null, 2);
+        }
 
+        public long inserirDado(String texto, int cor) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(COL_TEXTO, texto);
+            contentValues.put(COL_COR, cor);
+            return db.insert(TABLE_NAME, null, contentValues);
+        }
+
+        public void excluirDadoPorId(int id) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String whereClause = "_id=?";
+            String[] whereArgs = {String.valueOf(id)};
+            db.delete(TABLE_NAME, whereClause, whereArgs);
+            db.close();
+        }
     public Cursor obterTodosDados() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
+        return db.rawQuery("SELECT _id, " + COL_TEXTO + ", " + COL_COR + " FROM " + TABLE_NAME, null);
     }
 }
-
