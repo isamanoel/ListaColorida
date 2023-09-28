@@ -4,9 +4,9 @@ import android.graphics.Color;
 
 public class Texto {
     private String texto;
-    private Color cor;
+    private int cor;
 
-    public Texto (String texto, Color cor){
+    public Texto (String texto, int cor){
         this.texto = texto;
         this.cor = cor;
     }
@@ -15,7 +15,7 @@ public class Texto {
         return texto;
     }
 
-    public Color getCor() {
+    public int getCor() {
         return cor;
     }
 }
